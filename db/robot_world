@@ -1,0 +1,27 @@
+---
+robots:
+- id: 2
+  name: Doug
+  city: boston
+  state: ma
+  avatar: x
+  birthdate: x
+  date_hired: x
+  department: fdasfasdf
+- id: 3
+  name: Doug
+  city: boston
+  state: ma
+  avatar: x
+  birthdate: x
+  date_hired: x
+  department: x
+- id: 4
+  name: Doug
+  city: boston
+  state: ma
+  avatar: x
+  birthdate: x
+  date_hired: x
+  department: x
+total: 4

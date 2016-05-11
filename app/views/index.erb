@@ -1,12 +1,10 @@
-<!DOCTYPE html>
-<html>
-  <head>
-    <meta charset="utf-8">
-    <title>Robot World</title>
-  </head>
-  <body>
+<h1>All Robots</h1>
+
     <% @robots.each do |robot| %>
-      <h3><%= robot.id %>: <a href="/robots/<%= task.id %>"><%= robot.name %></a></h3>
+      <h3><%= robot.id %>: <a href="/robots/<%= robot.id %>"><%= robot.name %></a></h3>
+      <a href="/robots/<%= robot.id %>/edit">Edit</a>
+      <form action="/robots/<%= robot.id %>" method="post">
+        <input type="hidden" name="_method" value="DELETE">
+        <input type="submit" value="delete">      
+      </form>
     <% end  %>
-  </body>
-</html>

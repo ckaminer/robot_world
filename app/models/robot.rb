@@ -5,7 +5,8 @@ class Robot
               :avatar,
               :birthdate,
               :date_hired,
-              :department
+              :department,
+              :id
 
   def initialize(data)
     @id         = data["id"]

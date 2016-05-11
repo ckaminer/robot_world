@@ -1,7 +1,7 @@
 require 'yaml/store'
 require_relative 'robot'
 
-class RobotRepository
+class RobotWorld
   attr_reader :database
 
   def initialize(database)
@@ -40,6 +40,25 @@ class RobotRepository
 
   def find(id)
     Robot.new(raw_robot(id))
+  end
+
+  def update(id, robot)
+    database.transaction do
+      target_robot = database['robots'].find { |data| data["id"] == id }
+      target_robot["name"] = robot[:name]
+      target_robot["city"] = robot[:city]
+      target_robot["state"] = robot[:state]
+      target_robot["avatar"] = robot[:avatar]
+      target_robot["birthdate"] = robot[:birthdate]
+      target_robot["date_hired"] = robot[:date_hired]
+      target_robot["department"] = robot[:department]
+    end
+  end
+
+  def destroy(id)
+    database.transaction do
+      database['robots'].delete_if { |robot| robot["id"] == id }
+    end
   end
 
 end
