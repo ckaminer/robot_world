@@ -1,6 +1,3 @@
-require 'yaml/store'
-require_relative 'robot'
-
 class RobotWorld
   attr_reader :database
 
@@ -9,33 +6,21 @@ class RobotWorld
   end
 
   def create(robot)
-    database.transaction do
-      database['robots'] ||= []
-      database['total'] ||= 0
-      database['total'] +=1
-      database['robots'] << { "id"         => database['total'],
-                              "name"       => robot[:name],
-                              "city"       => robot[:city],
-                              "state"      => robot[:state],
-                              "avatar"     => robot[:avatar],
-                              "birthdate"  => robot[:birthdate],
-                              "date_hired" => robot[:date_hired],
-                              "department" => robot[:department]}
-    end
-  end
-
-  def raw_robots
-    database.transaction do
-      database['robots'] || []
-    end
+    table.insert(name: robot[:name],
+                 city: robot[:city],
+                 state: robot[:state],
+                 avatar: robot[:avatar],
+                 birthdate: robot[:birthdate],
+                 date_hired: robot[:date_hired],
+                 department: robot[:department])
   end
 
   def all
-    raw_robots.map { |data| Robot.new(data)}
+    table.to_a.map { |data| Robot.new(data) }
   end
 
   def raw_robot(id)
-    raw_robots.find { |robot| robot["id"] == id}
+    locate_robot(id).to_a.first
   end
 
   def find(id)
@@ -43,22 +28,30 @@ class RobotWorld
   end
 
   def update(id, robot)
-    database.transaction do
-      target_robot = database['robots'].find { |data| data["id"] == id }
-      target_robot["name"] = robot[:name]
-      target_robot["city"] = robot[:city]
-      target_robot["state"] = robot[:state]
-      target_robot["avatar"] = robot[:avatar]
-      target_robot["birthdate"] = robot[:birthdate]
-      target_robot["date_hired"] = robot[:date_hired]
-      target_robot["department"] = robot[:department]
-    end
+    locate_robot(id).update(robot)
   end
 
   def destroy(id)
-    database.transaction do
-      database['robots'].delete_if { |robot| robot["id"] == id }
+    locate_robot(id).delete
+  end
+
+  def delete_all
+    table.delete
+  end
+
+  def table
+    database.from(:robots).order(:id)
+  end
+
+  def locate_robot(id)
+    table.where(:id => id)
+  end
+
+  def average_robot_age
+    age_array = robots.all.map do |robot|
+      robot.age
     end
+    age_array.reduce(:+) / age_array.length
   end
 
 end
